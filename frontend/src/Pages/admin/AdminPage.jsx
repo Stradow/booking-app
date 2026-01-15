@@ -3,9 +3,9 @@ import { Outlet } from "react-router-dom";
 
 function AdminPage() {
   return (
-    <div>
+    <div className="flex min-h-screen bg-[#F4F1EC]">
       <AdminSidebar />
-      <main>
+      <main className="flex-1 p-6">
         <Outlet />
       </main>
     </div>
