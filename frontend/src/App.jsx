@@ -6,6 +6,7 @@ import AdminPage from "./Pages/admin/AdminPage";
 import DashboardView from "./components/admin/views/DashboardView";
 import AppointmentsView from "./components/admin/views/AppointmentsView";
 import ServicesView from "./components/admin/views/ServicesView";
+import ServiceForm from "./components/admin/views/ServiceForm";
 import AvailabilityView from "./components/admin/views/AvailabilityView";
 import ProfileView from "./components/admin/views/ProfileView";
 import SettingsView from "./components/admin/views/SettingsView";
@@ -22,6 +23,8 @@ function App() {
             <Route index element={<DashboardView />} />
             <Route path="appointments" element={<AppointmentsView />} />
             <Route path="services" element={<ServicesView />} />
+            <Route path="services/new" element={<ServiceForm />} />
+            <Route path="services/:id" element={<ServiceForm />} />
             <Route path="availability" element={<AvailabilityView />} />
             <Route path="profile" element={<ProfileView />} />
             <Route path="settings" element={<SettingsView />} />

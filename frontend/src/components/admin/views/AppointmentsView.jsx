@@ -4,7 +4,12 @@ import {
   XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import {
+  getAppointments,
+  getServices,
+  updateAppointmentStatus,
+  deleteAppointment,
+} from "../../../api/adminApi";
 
 function AppointmentsView() {
   const [appointments, setAppointment] = useState([]);
@@ -21,13 +26,12 @@ function AppointmentsView() {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/db")
-      .then(({ data }) => {
-        setAppointment(data.appointments);
-        setServices(data.services);
+    Promise.all([getAppointments(), getServices()])
+      .then(([appointmentsData, servicesData]) => {
+        setAppointment(appointmentsData);
+        setServices(servicesData);
       })
-      .catch((err) => console.log(err));
+      .catch(console.log);
   }, []);
 
   const getServiceName = (serviceId) => {
@@ -56,13 +60,10 @@ function AppointmentsView() {
 
   async function handleAcceptAppointment(id) {
     try {
-      const { data } = await axios.patch(
-        `http://localhost:4000/appointments/${id}`,
-        { status: "confirmed" }
-      );
+      const updatedAppointment = await updateAppointmentStatus(id, "confirmed");
 
       const updatedAppointments = appointments.map((app) =>
-        app.id === id ? data : app
+        app.id === id ? updatedAppointment : app
       );
       setAppointment(updatedAppointments);
     } catch (error) {
@@ -72,7 +73,7 @@ function AppointmentsView() {
 
   async function handleCancelAppointment(id) {
     try {
-      await axios.delete(`http://localhost:4000/appointments/${id}`);
+      await deleteAppointment(id);
 
       const filteredAppointments = appointments.filter((app) => app.id !== id);
       setAppointment(filteredAppointments);
