@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import notFound from "../assets/not-found.png";
 
 function NotFoundPage() {
@@ -12,14 +13,15 @@ function NotFoundPage() {
         </h1>
         <h3 className="mt-2 text-[#2F3A36] text-center max-w-md">
           The page you are looking for <br />
-          doesn’t seen to exist
+          doesn’t seem to exist
         </h3>
       </div>
 
-      <button className="mt-8 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition">
-        GO BACK HOME
-      </button>
-
+      <Link to="/">
+        <button className="mt-8 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition">
+          GO BACK HOME
+        </button>
+      </Link>
       <img src={notFound} className="w-200" />
     </div>
   );

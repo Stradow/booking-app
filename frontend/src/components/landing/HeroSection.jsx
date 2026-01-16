@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import heroImg from "../../assets/heroimg.png";
+import heroImg from "../../assets/hero.png";
 
 function HeroSection() {
   const [heroImage, setHeroImage] = useState(heroImg);
@@ -10,13 +10,16 @@ function HeroSection() {
   );
 
   return (
-    <section className="">
-      <div className="absolute inset-0 bg-black/20" />
-      <div className="">
-        <img src={heroImage} />
+    <section
+      /*  style={{ backgroundImage: `url(${heroImg})` }} */
+
+      className="flex justify-center"
+    >
+      {/* <div className="">
         <h1 className="">{headline}</h1>
         <p className="">{subtext}</p>
-      </div>
+      </div> */}
+      <img src={heroImage} className="" />
     </section>
   );
 }
