@@ -3,12 +3,15 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 function AppointmentsView() {
   const [appointments, setAppointment] = useState([]);
+  const [services, setServices] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [showFilter, setShowFilter] = useState(false);
 
   const statusStyles = {
     completed: "bg-[#5F6F73] text-white",
@@ -22,10 +25,61 @@ function AppointmentsView() {
       .get("http://localhost:4000/db")
       .then(({ data }) => {
         setAppointment(data.appointments);
-        console.log(data.appointments);
+        setServices(data.services);
       })
       .catch((err) => console.log(err));
   }, []);
+
+  const getServiceName = (serviceId) => {
+    const service = services.find((service) => service.id === serviceId);
+    return service ? service.name : "-";
+  };
+
+  // FILTER AND SEARCH
+  const normalizedSearch = searchTerm.toLowerCase();
+
+  const filteredAppointments = appointments.filter((appointment) => {
+    const clientName =
+      `${appointment.client.firstName} ${appointment.client.lastName}`.toLowerCase();
+
+    const serviceName = getServiceName(appointment.serviceId).toLowerCase();
+
+    const matchesSearch =
+      clientName.includes(normalizedSearch) ||
+      serviceName.includes(normalizedSearch);
+
+    const matchesStatus =
+      statusFilter === "all" || appointment.status === statusFilter;
+
+    return matchesSearch && statusFilter && matchesStatus;
+  });
+
+  async function handleAcceptAppointment(id) {
+    try {
+      const { data } = await axios.patch(
+        `http://localhost:4000/appointments/${id}`,
+        { status: "confirmed" }
+      );
+
+      const updatedAppointments = appointments.map((app) =>
+        app.id === id ? data : app
+      );
+      setAppointment(updatedAppointments);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  async function handleCancelAppointment(id) {
+    try {
+      await axios.delete(`http://localhost:4000/appointments/${id}`);
+
+      const filteredAppointments = appointments.filter((app) => app.id !== id);
+      setAppointment(filteredAppointments);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -34,17 +88,44 @@ function AppointmentsView() {
         <div className="flex items-center gap-3">
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search by client or service"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-56 bg-white border border-[#D8DCD6] rounded-lg px-3 py-2 placeholder:text-[#6B6F6C] focus:outline-none text-sm"
           />
-          <button className="flex items-center gap-2 text-sm">
-            <AdjustmentsHorizontalIcon className="size-5" />
-            Filter
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowFilter((prev) => !prev)}
+              className="flex items-center gap-2 text-sm"
+            >
+              <AdjustmentsHorizontalIcon className="size-5" />
+              Filter
+            </button>
+            {showFilter && (
+              <div className="absolute top-full mt-4 w-40 rounded-lg border border-[#D8DCD6] bg-white shadow-sm z-50">
+                {["all", "confirmed", "pending", "completed", "canceled"].map(
+                  (status) => (
+                    <button
+                      key={status}
+                      onClick={() => {
+                        setStatusFilter(status);
+                        setShowFilter(false);
+                      }}
+                      className="block w-full px-4 py-2 text-left text-sm hover:bg-[#F4F5F3]"
+                    >
+                      <span className="text-xs text-[#6B6F6C]">
+                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                      </span>
+                    </button>
+                  )
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="overflow-hidden">
+      <div>
         <table className="w-full text-sm text-[#2F3A36]">
           <thead className="text-left">
             <tr>
@@ -59,13 +140,18 @@ function AppointmentsView() {
           </thead>
 
           <tbody>
-            {appointments.map((appointment) => (
+            {filteredAppointments.map((appointment) => (
               <tr className="border-t border-[#D8DCD6]" key={appointment.id}>
                 <td className="px-4 py-4">{appointment.date}</td>
                 <td className="px-4 py-4">{appointment.time}</td>
-                <td className="px-4 py-4">{appointment.clientId}</td>
-                <td className="px-4 py-4">+31 9999-9999</td>
-                <td className="px-4 py-4">{appointment.serviceId}</td>
+                <td className="px-4 py-4">
+                  {appointment.client.firstName}
+                  {appointment.client.lastName}
+                </td>
+                <td className="px-4 py-4">{appointment.client.phone}</td>
+                <td className="px-4 py-4">
+                  {getServiceName(appointment.serviceId)}
+                </td>
                 <td className="px-4 py-4">
                   <span
                     className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
@@ -76,12 +162,20 @@ function AppointmentsView() {
                 </td>
                 <td className="px-4 py-4">
                   <div className="flex justify-center gap-3">
-                    <Link>
+                    <button
+                      onClick={() => {
+                        handleAcceptAppointment(appointment.id);
+                      }}
+                    >
                       <CheckCircleIcon className="size-6 text-[#778873]" />
-                    </Link>
-                    <Link>
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleCancelAppointment(appointment.id);
+                      }}
+                    >
                       <XCircleIcon className="size-6 text-[#778873]" />
-                    </Link>
+                    </button>
                   </div>
                 </td>
               </tr>
