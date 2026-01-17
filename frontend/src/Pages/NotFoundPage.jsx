@@ -18,7 +18,7 @@ function NotFoundPage() {
       </div>
 
       <Link to="/">
-        <button className="mt-8 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition">
+        <button className="mt-8 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition cursor-pointer">
           GO BACK HOME
         </button>
       </Link>

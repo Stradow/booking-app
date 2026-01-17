@@ -5,9 +5,13 @@ function Footer() {
     <footer className="bg-[#778873] text-white">
       <div className="container mx-auto px-6 py-12">
         <div className="grid md:grid-cols-4 gap-10">
+          {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold">Kalmio Booking</span>
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                <span className="text-[#778873] text-xl font-bold">T</span>
+              </div>
+              <span className="text-2xl font-bold">Therapy Booking</span>
             </div>
             <p className="text-sm text-white/80 leading-relaxed">
               Professional massage and therapy services focused on your
@@ -15,6 +19,7 @@ function Footer() {
             </p>
           </div>
 
+          {/* Navigation */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Navigation</h4>
             <ul className="space-y-2 text-sm">
@@ -41,6 +46,7 @@ function Footer() {
             </ul>
           </div>
 
+          {/* Services */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-sm text-white/90">
@@ -51,6 +57,7 @@ function Footer() {
             </ul>
           </div>
 
+          {/* Contact */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact</h4>
             <ul className="space-y-2 text-sm text-white/90">
@@ -61,6 +68,7 @@ function Footer() {
           </div>
         </div>
 
+        {/* Bottom */}
         <div className="border-t border-white/20 mt-10 pt-6 text-center text-sm text-white/70">
           © {new Date().getFullYear()} Therapy Booking. All rights reserved.
         </div>
