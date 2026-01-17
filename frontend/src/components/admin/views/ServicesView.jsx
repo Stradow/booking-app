@@ -7,17 +7,21 @@ function ServicesView() {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
-    getServices().then(setServices).catch(console.log);
+    getServices()
+      .then(setServices)
+      .catch((error) => console.log("No services found", error));
   }, []);
 
-  async function handleDeleteService(id) {
+  async function handleDeleteService(serviceId) {
     try {
-      await deleteService(id);
+      await deleteService(serviceId);
 
-      const filteredservices = services.filter((app) => app.id !== id);
+      const filteredservices = services.filter(
+        (service) => service.id !== serviceId
+      );
       setServices(filteredservices);
     } catch (error) {
-      console.log("error", error);
+      console.log("Error on delete a service", error);
     }
   }
 
