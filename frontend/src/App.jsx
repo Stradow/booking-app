@@ -10,6 +10,8 @@ import ServiceForm from "./components/admin/views/ServiceForm";
 import AvailabilityView from "./components/admin/views/AvailabilityView";
 import ProfileView from "./components/admin/views/ProfileView";
 import SettingsView from "./components/admin/views/SettingsView";
+import LoginPage from "./Pages/LoginPage";
+import RegisterPage from "./Pages/RegisterPage";
 
 function App() {
   return (
@@ -18,6 +20,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/booking" element={<BookingPage />} />
+
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
           <Route path="/admin" element={<AdminPage />}>
             <Route index element={<DashboardView />} />

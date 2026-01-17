@@ -31,7 +31,7 @@ function AppointmentsView() {
         setAppointment(appointmentsData);
         setServices(servicesData);
       })
-      .catch(console.log);
+      .catch((error) => console.log("No data found", error));
   }, []);
 
   const getServiceName = (serviceId) => {
@@ -62,12 +62,12 @@ function AppointmentsView() {
     try {
       const updatedAppointment = await updateAppointmentStatus(id, "confirmed");
 
-      const updatedAppointments = appointments.map((app) =>
-        app.id === id ? updatedAppointment : app
+      const updatedAppointments = appointments.map((appointment) =>
+        appointment.id === id ? updatedAppointment : appointment
       );
       setAppointment(updatedAppointments);
     } catch (error) {
-      console.log("error", error);
+      console.log("Error updating appointment", error);
     }
   }
 
@@ -75,10 +75,12 @@ function AppointmentsView() {
     try {
       await deleteAppointment(id);
 
-      const filteredAppointments = appointments.filter((app) => app.id !== id);
+      const filteredAppointments = appointments.filter(
+        (appointment) => appointment.id !== id
+      );
       setAppointment(filteredAppointments);
     } catch (error) {
-      console.log("error", error);
+      console.log("Error canceling the appointment", error);
     }
   }
 
