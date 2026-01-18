@@ -1,11 +1,12 @@
 import logo from "../assets/logo-green.png";
 import googlelogo from "../assets/google.svg";
+import { Link } from "react-router-dom";
 
 function LoginPage() {
   return (
     <>
       <div className="flex min-h-screen items-center justify-center px-6 bg-[#F4F1EC]">
-        <div className="bg-[#FAFAF8] rounded-xl py-10 px-8 shadow-sm border border-[#E6E8E3] max-w-sm w-full">
+        <div className="bg-[#FAFAF8] rounded-xl py-8 px-10 shadow-sm border border-[#E6E8E3] max-w-md w-full">
           {/* <img alt="Kalmio logo" src={logo} className="mx-auto h-12 w-auto" /> */}
           <h2 className="mt-3 text-center text-3xl font-medium tracking-tight text-[#2F3A36]">
             Sign in to your account
@@ -17,15 +18,14 @@ function LoginPage() {
                 <label className="block text-sm font-medium text-[#2F3A36] mb-2">
                   Email address
                 </label>
-                <div className="mt-2">
-                  <input
-                    type="email"
-                    placeholder="E-mail address"
-                    required
-                    className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
+
+                <input
+                  type="email"
+                  placeholder="E-mail address"
+                  required
+                  className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
                     focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
-                  />
-                </div>
+                />
               </div>
 
               <div>
@@ -34,15 +34,14 @@ function LoginPage() {
                     Password
                   </label>
                 </div>
-                <div className="mt-2">
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    required
-                    className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
+
+                <input
+                  type="password"
+                  placeholder="Password"
+                  required
+                  className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
                     focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
-                  />
-                </div>
+                />
               </div>
 
               <div className="mt-4 flex items-center justify-between text-sm">
@@ -77,12 +76,12 @@ function LoginPage() {
 
             <p className="mt-8 text-center text-sm/6 text-gray-400">
               Don't have an account?{" "}
-              <a
-                href="#"
+              <Link
+                to="/register"
                 className="font-semibold text-[#2F3A36] hover:text-[#6B6F6C] hover:underline underline-offset-4"
               >
                 SIGN UP
-              </a>
+              </Link>
             </p>
           </div>
         </div>
