@@ -158,7 +158,7 @@ function AppointmentsView() {
                 <td className="px-4 py-4">
                   <span
                     className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
-      ${statusStyles[appointment.status?.toLowerCase()]}`}
+                      ${statusStyles[appointment.status?.toLowerCase()]}`}
                   >
                     {appointment.status}
                   </span>
