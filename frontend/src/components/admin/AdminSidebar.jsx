@@ -101,12 +101,7 @@ function AdminSidebar() {
       </nav>
 
       <div className="px-2 pb-6">
-        <NavLink
-          to="/admin/logout"
-          className={({ isActive }) =>
-            `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
-          }
-        >
+        <NavLink to="/" className={`${baseLink} ${hoverLink}`}>
           <ArrowLeftEndOnRectangleIcon className="size-5 text-[#778873]" />
           <span className="text-sm text-[#2F3A36]">Logout</span>
         </NavLink>
