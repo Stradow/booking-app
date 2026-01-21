@@ -3,11 +3,18 @@ import {
   ClipboardIcon,
   CalendarIcon,
   WrenchScrewdriverIcon,
+  PlusIcon,
   CalendarDaysIcon,
   UserCircleIcon,
   Cog6ToothIcon,
   ArrowLeftEndOnRectangleIcon,
 } from "@heroicons/react/24/outline";
+
+const baseLink =
+  "group flex items-center gap-3 px-4 py-2 rounded-md transition-colors";
+
+const activeLink = "bg-[#E4EAE7]";
+const hoverLink = "hover:bg-[#F1F4F2]";
 
 function AdminSidebar() {
   return (
@@ -22,74 +29,86 @@ function AdminSidebar() {
         <NavLink
           to="/admin"
           end
-          className="group flex items-center gap-3 px-4 py-2"
+          className={({ isActive }) =>
+            `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
+          }
         >
-          <ClipboardIcon className="size-5 text-[#778873] group-[aria-current=page]:text-[#D6B1A3]" />
-          <span className="text-sm text-[#2F3A36] group-[aria-current=page]:text-[#6B6F6C]">
-            Dashboard
-          </span>
+          <ClipboardIcon className="size-5 text-[#778873]" />
+          <span className="text-sm text-[#2F3A36]">Dashboard</span>
         </NavLink>
 
         <NavLink
           to="/admin/appointments"
-          className="group flex items-center gap-3 px-4 py-2"
+          className={({ isActive }) =>
+            `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
+          }
         >
-          <CalendarIcon className="size-5 text-[#778873] group-[aria-current=page]:text-[#D6B1A3]" />
-          <span className="text-sm text-[#2F3A36] group-[aria-current=page]:text-[#6B6F6C]">
-            Appointments
-          </span>
+          <CalendarIcon className="size-5 text-[#778873]" />
+          <span className="text-sm text-[#2F3A36]">Appointments</span>
         </NavLink>
 
         <NavLink
           to="/admin/services"
-          className="group flex items-center gap-3 px-4 py-2"
+          className={({ isActive }) =>
+            `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
+          }
         >
-          <WrenchScrewdriverIcon className="size-5 text-[#778873] group-[aria-current=page]:text-[#D6B1A3]" />
-          <span className="text-sm text-[#2F3A36] group-[aria-current=page]:text-[#6B6F6C]">
-            Services
-          </span>
+          <WrenchScrewdriverIcon className="size-5 text-[#778873]" />
+          <span className="text-sm text-[#2F3A36]">Services</span>
+        </NavLink>
+
+        <NavLink
+          to="/admin/services/new"
+          className={({ isActive }) =>
+            `ml-9 flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors
+             ${hoverLink}
+             ${isActive ? "bg-[#DDE4E0]" : ""}`
+          }
+        >
+          <PlusIcon className="size-4 text-[#778873]" />
+          <span className="text-[#2F3A36]">Add Service</span>
         </NavLink>
 
         <NavLink
           to="/admin/availability"
-          className="group flex items-center gap-3 px-4 py-2"
+          className={({ isActive }) =>
+            `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
+          }
         >
-          <CalendarDaysIcon className="size-5 text-[#778873] group-[aria-current=page]:text-[#D6B1A3]" />
-          <span className="text-sm text-[#2F3A36] group-[aria-current=page]:text-[#6B6F6C]">
-            Availability
-          </span>
+          <CalendarDaysIcon className="size-5 text-[#778873]" />
+          <span className="text-sm text-[#2F3A36]">Availability</span>
         </NavLink>
 
         <NavLink
           to="/admin/profile"
-          className="group flex items-center gap-3 px-4 py-2"
+          className={({ isActive }) =>
+            `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
+          }
         >
-          <UserCircleIcon className="size-5 text-[#778873] group-[aria-current=page]:text-[#D6B1A3]" />
-          <span className="text-sm text-[#2F3A36] group-[aria-current=page]:text-[#6B6F6C]">
-            Profile
-          </span>
+          <UserCircleIcon className="size-5 text-[#778873]" />
+          <span className="text-sm text-[#2F3A36]">Profile</span>
         </NavLink>
 
         <NavLink
           to="/admin/settings"
-          className="group flex items-center gap-3 px-4 py-2"
+          className={({ isActive }) =>
+            `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
+          }
         >
-          <Cog6ToothIcon className="size-5 text-[#778873] group-[aria-current=page]:text-[#D6B1A3]" />
-          <span className="text-sm text-[#2F3A36] group-[aria-current=page]:text-[#6B6F6C]">
-            Settings
-          </span>
+          <Cog6ToothIcon className="size-5 text-[#778873]" />
+          <span className="text-sm text-[#2F3A36]">Settings</span>
         </NavLink>
       </nav>
 
       <div className="px-2 pb-6">
         <NavLink
           to="/admin/logout"
-          className="group flex items-center gap-3 px-4 py-2"
+          className={({ isActive }) =>
+            `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
+          }
         >
-          <ArrowLeftEndOnRectangleIcon className="size-5 text-[#778873] group-[aria-current=page]:text-[#D6B1A3]" />
-          <span className="text-sm text-[#2F3A36] group-[aria-current=page]:text-[#6B6F6C]">
-            Logout
-          </span>
+          <ArrowLeftEndOnRectangleIcon className="size-5 text-[#778873]" />
+          <span className="text-sm text-[#2F3A36]">Logout</span>
         </NavLink>
       </div>
     </aside>
