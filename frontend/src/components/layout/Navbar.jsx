@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import appLogo from "../../assets/kalmio.png";
+import appLogo from "../../assets/images/Kalmio.png";
 
 function Navbar() {
   return (

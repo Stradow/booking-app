@@ -1,4 +1,4 @@
-import heroImg from "../../assets/hero.png";
+import heroImg from "../../assets/images/hero.png";
 
 function HeroSection() {
   return (
