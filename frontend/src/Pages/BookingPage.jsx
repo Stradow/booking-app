@@ -1,4 +1,10 @@
+import BookingFlow from "../components/booking/BookingFlow";
+
 function BookingPage() {
-  return <div>BookingPage</div>;
+  return (
+    <>
+      <BookingFlow />
+    </>
+  );
 }
 export default BookingPage;
