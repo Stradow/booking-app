@@ -1,7 +1,13 @@
 const { Schema, model } = require("mongoose");
 
 const therapistsSchema = new Schema({
-  services: [{ type: ObjectId, ref: "Services" }],
+  services: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Services",
+      required: true,
+    },
+  ],
 
   firstName: {
     type: String,

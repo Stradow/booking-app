@@ -5,7 +5,7 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 // const { isAuthenticated } = require("");
 
-router.post("/singup", async (req, res) => {
+router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
   try {
     const userAlreadyInDB = await UserModel.findOne({ email });
@@ -36,7 +36,7 @@ router.post("/login", async (req, res) => {
     } else {
       const doesPasswordMatch = bcryptjs.compareSync(
         password,
-        userAlreadyInDB.password
+        userAlreadyInDB.password,
       );
       if (!doesPasswordMatch) {
         res.status(403).json({ errorMessage: "Wrong Password" });
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/verify", async (req, res) => {
   const currentLoggedInUser = await UserModel.findById(req.payload._id).select(
-    "-password -email"
+    "-password -email",
   );
   res.status(200).json({ message: "Token is valid: ", currentLoggedInUser });
 });
