@@ -5,29 +5,29 @@ import { autorizationToken } from "../api/adminApi";
 const AuthContext = createContext();
 
 const AuthWrapper = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentTherapist, setCurrentTherapist] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const nav = useNavigate();
 
-  async function authenticateUser() {
+  async function authenticateTherapist() {
     const tokenInStorage =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 
     if (!tokenInStorage) {
-      setCurrentUser(null);
+      setCurrentTherapist(null);
       setIsLoading(false);
       setIsLoggedIn(false);
       return;
     }
     try {
-      const user = await autorizationToken(tokenInStorage);
+      const therapist = await autorizationToken(tokenInStorage);
 
-      setCurrentUser(user);
+      setCurrentTherapist(therapist);
       setIsLoggedIn(true);
     } catch (error) {
       console.log(error);
-      setCurrentUser(null);
+      setCurrentTherapist(null);
       setIsLoggedIn(false);
       nav("/");
     } finally {
@@ -41,17 +41,17 @@ const AuthWrapper = ({ children }) => {
   };
 
   useEffect(() => {
-    authenticateUser();
+    authenticateTherapist();
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
-        currentUser,
-        setCurrentUser,
+        currentTherapist,
+        setCurrentTherapist,
         isLoading,
         isLoggedIn,
-        authenticateUser,
+        authenticateTherapist,
         handleLogout,
       }}
     >

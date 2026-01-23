@@ -5,7 +5,7 @@ const therapistsSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: "Services",
-      required: true,
+      required: [],
     },
   ],
 
@@ -27,6 +27,11 @@ const therapistsSchema = new Schema({
   },
   experience: {
     type: String,
+  },
+  password: {
+    type: String,
+    required: true,
+    select: false,
   },
   phone: {
     type: Number,

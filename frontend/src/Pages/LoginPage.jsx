@@ -12,7 +12,7 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const nav = useNavigate();
-  const { authenticateUser } = useContext(AuthContext);
+  const { authenticateTherapist } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,7 +25,7 @@ function LoginPage() {
         sessionStorage.setItem("authToken", response.authToken);
       }
 
-      await authenticateUser();
+      await authenticateTherapist();
       nav("/admin");
     } catch (error) {
       console.log(error);
