@@ -1,26 +1,68 @@
-import logo from "../assets/logo-green.png";
-import googlelogo from "../assets/google.svg";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
+import { signup } from "../api/adminApi";
+import googlelogo from "../assets/images/google.svg";
+import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
 
 function RegisterPage() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const nav = useNavigate();
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await signup({ firstName, lastName, password, email });
+      nav("/login");
+    } catch (error) {
+      console.log(error);
+      setError(error.response.data.errorMessage);
+    }
+  };
+
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center px-6 bg-[#F4F1EC]">
+      <Navbar />
+      <div className="flex h-[80vh] items-center justify-center px-6 bg-[#F4F1EC]">
         <div className="bg-[#FAFAF8] rounded-xl py-6 px-10 shadow-sm border border-[#E6E8E3] max-w-md w-full">
-          {/* <img alt="Kalmio logo" src={logo} className="mx-auto h-12 w-auto" /> */}
           <h2 className="mt-3 text-center text-3xl font-medium tracking-tight text-[#2F3A36]">
             Sign Up
           </h2>
 
           <div className="mt-8 w-full">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSignUp}>
               <div>
                 <label className="block text-sm font-medium text-[#2F3A36] mb-2">
-                  Full Name
+                  First Name
                 </label>
                 <input
                   type="text"
-                  placeholder="Full Name"
+                  value={firstName}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                  }}
+                  placeholder="First Name"
+                  required
+                  className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
+                    focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2F3A36] mb-2">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                  }}
+                  placeholder="Last Name"
                   required
                   className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
                     focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
@@ -32,6 +74,8 @@ function RegisterPage() {
                 </label>
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="E-mail address"
                   required
                   className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
@@ -48,13 +92,15 @@ function RegisterPage() {
 
                 <input
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                   required
                   className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
                     focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
                 />
               </div>
-              <div>
+              {/* <div>
                 <div className="flex items-center justify-between">
                   <label className="block text-sm font-medium text-[#2F3A36] mb-2">
                     Confirm Password
@@ -67,8 +113,8 @@ function RegisterPage() {
                   className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
                     focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
                 />
-              </div>
-
+              </div> */}
+              {error && <p>{error}</p>}
               <div>
                 <button className="flex w-full justify-center mt-6 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition">
                   CREATE ACCOUNT
@@ -93,6 +139,7 @@ function RegisterPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

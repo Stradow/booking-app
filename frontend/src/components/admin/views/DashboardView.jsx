@@ -1,3 +1,6 @@
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { getAdminData } from "../../../api/adminApi";
 import {
   CalendarIcon,
   UsersIcon,
@@ -6,10 +9,29 @@ import {
 } from "@heroicons/react/24/outline";
 
 function DashboardView() {
+  const { currentUser, setCurrentUser } = useContext(AuthContext);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDashboard() {
+      try {
+        const data = await getAdminData();
+        setDashboardData(data);
+      } catch (error) {
+        console.log("Dashboard error", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchDashboard();
+  }, []);
+
   return (
     <div className="p-6 space-y-6">
       <h2 className="text-[#2F3A36] text-3xl font-medium">
-        Welcome back, Name of the Therapist!
+        Welcome back, {currentUser?.firstName}!
       </h2>
 
       <section>

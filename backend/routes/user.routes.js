@@ -1,7 +1,7 @@
 const UserModel = require("../models/User.model");
 const router = require("express").Router();
 
-router.post("/create", async (req, res) => {
+router.post("/create-user", async (req, res) => {
   try {
     const createdUser = await UserModel.create(req.body);
     res.status(201).json(createdUser);
@@ -19,7 +19,7 @@ router.get("/all-users", async (req, res) => {
   }
 });
 
-router.get("/one-user:id", async (req, res) => {
+router.get("/one-user/:id", async (req, res) => {
   try {
     const foundUserById = await UserModel.findById(req.params.id);
     res.status(200).json(foundUserById);
@@ -29,6 +29,19 @@ router.get("/one-user:id", async (req, res) => {
 });
 
 router.put("/update-user/:id", async (req, res) => {
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true },
+    );
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ errorMessage: error });
+  }
+});
+
+router.patch("/update-user/:id", async (req, res) => {
   try {
     const updatedUser = await UserModel.findByIdAndUpdate(
       req.params.id,

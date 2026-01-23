@@ -1,7 +1,7 @@
 const AppointmentModel = require("../models/Appointments.model");
 const router = require("express").Router();
 
-router.post("/create", async (req, res) => {
+router.post("/create-appointment", async (req, res) => {
   try {
     const createdAppointment = await AppointmentModel.create(req.body);
     res.status(201).json(createdAppointment);
@@ -19,7 +19,7 @@ router.get("/all-appointments", async (req, res) => {
   }
 });
 
-router.get("/one-appointment:id", async (req, res) => {
+router.get("/one-appointment/:id", async (req, res) => {
   try {
     const foundAppointmentById = await AppointmentModel.findById(req.params.id);
     res.status(200).json(foundAppointmentById);
@@ -30,12 +30,24 @@ router.get("/one-appointment:id", async (req, res) => {
 
 router.put("/update-appointment/:id", async (req, res) => {
   try {
-    const updatedAppointment = await AppointmentModel.findByIdAndUpdate(
+    const updateAppointment = await AppointmentModel.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true },
     );
-    res.status(200).json(updatedAppointment);
+    res.status(200).json(updateAppointment);
+  } catch (error) {
+    res.status(500).json({ errorMessage: error });
+  }
+});
+
+router.patch("/update-appointment/:id", async (req, res) => {
+  try {
+    const updateAppointment = await AppointmentModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true },
+    );
   } catch (error) {
     res.status(500).json({ errorMessage: error });
   }
