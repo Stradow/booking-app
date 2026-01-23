@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const UserModel = require("../models/User.model");
+const TherapistModel = require("../models/Therapists.model");
 
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -8,42 +8,42 @@ const { isAuthenticated } = require("../middlewares/jwt.middleware");
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
   try {
-    const userAlreadyInDB = await UserModel.findOne({ email });
-    if (userAlreadyInDB) {
+    const therapistAlreadyInDB = await TherapistModel.findOne({ email });
+    if (therapistAlreadyInDB) {
       res.status(403).json({ errorMessage: "Email already used" });
     } else {
       const theSalt = bcryptjs.genSaltSync(12);
       const theHashedPassword = bcryptjs.hashSync(password, theSalt);
-      const hashedUser = {
+      const hashedTherapist = {
         ...req.body,
         password: theHashedPassword,
       };
-      const createdUser = await UserModel.create(hashedUser);
-      res.status(201).json(createdUser);
+      const createdTherapist = await TherapistModel.create(hashedTherapist);
+      res.status(201).json(createdTherapist);
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ errorMessage: error });
+    res.status(500).json({ errorMessage: error.message });
   }
 });
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
-    const userAlreadyInDB = await UserModel.findOne({ email });
-    if (!userAlreadyInDB) {
-      res.status(403).json({ errorMessage: "Email already used" });
+    const therapistAlreadyInDB = await TherapistModel.findOne({ email });
+    if (!therapistAlreadyInDB) {
+      res.status(403).json({ errorMessage: "Email not found" });
     } else {
       const doesPasswordMatch = bcryptjs.compareSync(
         password,
-        userAlreadyInDB.password,
+        therapistAlreadyInDB.password,
       );
       if (!doesPasswordMatch) {
         res.status(403).json({ errorMessage: "Wrong Password" });
       } else {
-        const payload = { _id: userAlreadyInDB._id };
+        const payload = { _id: therapistAlreadyInDB._id };
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
-          algoritm: "HS256",
+          algorithm: "HS256",
           expiresIn: "6h",
         });
         res.status(200).json({ message: "you are now logged in", authToken });
@@ -51,15 +51,17 @@ router.post("/login", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ errorMessage: error });
+    res.status(500).json({ errorMessage: error.message });
   }
 });
 
 router.get("/verify", isAuthenticated, async (req, res) => {
-  const currentLoggedInUser = await UserModel.findById(req.payload._id).select(
-    "-password -email",
-  );
-  res.status(200).json({ message: "Token is valid: ", currentLoggedInUser });
+  const currentLoggedInTherapist = await TherapistModel.findById(
+    req.payload._id,
+  ).select("-password -email");
+  res
+    .status(200)
+    .json({ message: "Token is valid: ", currentLoggedInTherapist });
 });
 
 module.exports = router;

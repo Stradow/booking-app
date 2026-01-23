@@ -10,6 +10,7 @@ function RegisterPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const nav = useNavigate();
@@ -17,11 +18,11 @@ function RegisterPage() {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await signup({ firstName, lastName, password, email });
+      await signup({ firstName, lastName, password, email, phone });
       nav("/login");
     } catch (error) {
       console.log(error);
-      setError(error.response.data.errorMessage);
+      setError(error.response?.data?.errorMessage);
     }
   };
 
@@ -76,6 +77,21 @@ function RegisterPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder="E-mail address"
+                  required
+                  className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
+                    focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#2F3A36] mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   placeholder="E-mail address"
                   required
                   className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
