@@ -1,4 +1,4 @@
-import Therapist from "../../assets/therapist.png";
+import Therapist from "../../assets/images/therapist.png";
 
 function AboutTherapist() {
   return (

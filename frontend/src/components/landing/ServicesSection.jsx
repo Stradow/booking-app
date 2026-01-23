@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import hotStone from "../../assets/hotStoneMassage.png";
-import Physiotherap from "../../assets/ManualTherapy.png";
-import rehab from "../../assets/PostureCorrection.png";
+import hotStone from "../../assets/images/hotStoneMassage.png";
+import Physiotherap from "../../assets/images/ManualTherapy.png";
+import rehab from "../../assets/images/PostureCorrection.png";
 
 function ServicesSection() {
   const services = [

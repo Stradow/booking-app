@@ -3,7 +3,7 @@ const UserModel = require("../models/User.model");
 
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-// const { isAuthenticated } = require("");
+const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/verify", async (req, res) => {
+router.get("/verify", isAuthenticated, async (req, res) => {
   const currentLoggedInUser = await UserModel.findById(req.payload._id).select(
     "-password -email",
   );
