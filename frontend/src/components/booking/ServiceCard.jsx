@@ -54,7 +54,7 @@ function ServiceCard({ selectedService, setSelectedService, onNext }) {
           onClick={onNext}
           className="bg-[#778873] text-white px-6 py-2 rounded-lg disabled:opacity-50"
         >
-          NEXT →
+          Next →
         </button>
       </div>
     </div>
