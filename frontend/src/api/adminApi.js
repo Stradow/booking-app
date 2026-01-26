@@ -163,10 +163,3 @@ export const updateUser = async (id, updates) => {
 export const deleteUser = async (id) => {
   await axios.delete(`${API_URL}/user/delete-user/${id}`);
 };
-
-/* DASHBOARD / COMBINED DATA */
-
-export const getAdminData = async () => {
-  const { data } = await axios.get(`${API_URL}`);
-  return data;
-};

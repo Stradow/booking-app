@@ -2,27 +2,29 @@ const { Schema, model } = require("mongoose");
 
 const appointmentsSchema = new Schema(
   {
-    clientId: {
+    userId: {
       type: Schema.Types.ObjectId,
-      ref: "Client",
+      ref: "User",
       required: true,
     },
     therapistId: {
       type: Schema.Types.ObjectId,
-      ref: "Therapist",
+      ref: "Therapists",
       required: true,
     },
-    serviceId: {
-      type: Schema.Types.ObjectId,
-      ref: "Service",
-      required: true,
-    },
+    serviceId: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Services",
+        required: true,
+      },
+    ],
     startAt: {
       type: Date,
       default: Date.now,
     },
     endAt: {
-      Date,
+      type: Date,
     },
     status: {
       type: String,
