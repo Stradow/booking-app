@@ -37,7 +37,9 @@ router.put("/update-appointment/:id", async (req, res) => {
       req.params.id,
       req.body,
       { new: true },
-    );
+    )
+      .populate("userId", "firstName lastName phone")
+      .populate("serviceId", "name duration price");
     res.status(200).json(updateAppointment);
   } catch (error) {
     res.status(500).json({ errorMessage: error });

@@ -17,7 +17,7 @@ function ServicesView() {
       await deleteService(serviceId);
 
       const filteredservices = services.filter(
-        (service) => service.id !== serviceId
+        (service) => service._id !== serviceId,
       );
       setServices(filteredservices);
     } catch (error) {
@@ -57,14 +57,14 @@ function ServicesView() {
                 <td className="px-4 py-4">{service.description}</td>
                 <td className="px-4 py-4">
                   <div className="flex justify-center gap-3">
-                    <Link to={`/admin/services/${service.id}`}>
+                    <Link to={`/admin/services/${service._id}`}>
                       <button>
                         <PencilSquareIcon className="size-6 text-[#778873]" />
                       </button>
                     </Link>
                     <button
                       onClick={() => {
-                        handleDeleteService(service.id);
+                        handleDeleteService(service._id);
                       }}
                     >
                       <XCircleIcon className="size-6 text-[#778873]" />
