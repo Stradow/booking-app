@@ -12,7 +12,10 @@ router.post("/create-appointment", async (req, res) => {
 
 router.get("/all-appointments", async (req, res) => {
   try {
-    const data = await AppointmentModel.find();
+    const data = await AppointmentModel.find()
+      .populate("userId", "firstName lastName")
+      .populate("therapistId", "firstName lastName")
+      .populate("serviceId", "name duration price");
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ errorMessage: error });
