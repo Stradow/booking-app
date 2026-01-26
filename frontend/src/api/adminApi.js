@@ -59,6 +59,19 @@ export const deleteTherapist = async (id) => {
   await axios.delete(`${API_URL}/therapist/delete-therapist/${id}`);
 };
 
+export const uploadTherapistProfilePicture = async (id, formData) => {
+  const { data } = await axios.post(
+    `${API_URL}/therapist/upload-profile-picture/${id}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
+  return data;
+};
+
 /* SERVICES*/
 
 export const getServices = async () => {
@@ -162,4 +175,17 @@ export const updateUser = async (id, updates) => {
 
 export const deleteUser = async (id) => {
   await axios.delete(`${API_URL}/user/delete-user/${id}`);
+};
+
+export const uploadUserProfilePicture = async (id, formData) => {
+  const { data } = await axios.post(
+    `${API_URL}/user/upload-profile-picture/${id}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
+  return data;
 };
