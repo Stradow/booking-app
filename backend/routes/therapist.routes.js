@@ -1,5 +1,7 @@
 const TherapistModel = require("../models/Therapists.model");
 const router = require("express").Router();
+const uploader = require("../middlewares/cloudinary.config");
+const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
 router.post("/create-therapist", async (req, res) => {
   try {
@@ -62,5 +64,25 @@ router.delete("/delete-therapist/:id", async (req, res) => {
     res.status(500).json({ errorMessage: error });
   }
 });
+
+// Update profile picture
+router.post(
+  "/update-profile-picture/:therapistId",
+  isAuthenticated,
+  uploader.single("imageUrl"),
+  async (req, res) => {
+    try {
+      const updatedTherapist = await TherapistModel.findByIdAndUpdate(
+        req.params.therapistId,
+        { profilePicture: req.file.path },
+        { new: true },
+      ).select("-password");
+      res.status(200).json({ message: "Image updated", updatedTherapist });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ errorMessage: error.message });
+    }
+  },
+);
 
 module.exports = router;
