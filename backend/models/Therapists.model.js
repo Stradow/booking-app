@@ -30,8 +30,12 @@ const therapistsSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
     select: false,
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
   },
   phone: {
     type: Number,

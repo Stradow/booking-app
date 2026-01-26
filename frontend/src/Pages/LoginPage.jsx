@@ -2,7 +2,8 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { login } from "../api/adminApi";
-import googlelogo from "../assets/images/google.svg";
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 
@@ -11,6 +12,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+
   const nav = useNavigate();
   const { authenticateTherapist } = useContext(AuthContext);
 
@@ -28,8 +30,31 @@ function LoginPage() {
       await authenticateTherapist();
       nav("/admin");
     } catch (error) {
-      console.log(error);
-      setError(error.response.data.errorMessage);
+      setError(error.response?.data?.errorMessage || "Login failed");
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const { credential } = credentialResponse;
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/google`,
+        { idToken: credential },
+      );
+
+      const { authToken } = response.data;
+
+      if (rememberMe) {
+        localStorage.setItem("authToken", authToken);
+      } else {
+        sessionStorage.setItem("authToken", authToken);
+      }
+
+      await authenticateTherapist();
+      nav("/admin");
+    } catch (error) {
+      setError("Google login failed");
     }
   };
 
@@ -48,13 +73,10 @@ function LoginPage() {
                 <label className="block text-sm font-medium text-[#2F3A36] mb-2">
                   Email address
                 </label>
-
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="E-mail address"
                   required
                   className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
@@ -63,18 +85,13 @@ function LoginPage() {
               </div>
 
               <div>
-                <div className="flex items-center justify-between">
-                  <label className="block text-sm font-medium text-[#2F3A36] mb-2">
-                    Password
-                  </label>
-                </div>
-
+                <label className="block text-sm font-medium text-[#2F3A36] mb-2">
+                  Password
+                </label>
                 <input
                   type="password"
                   value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                   required
                   className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
@@ -82,44 +99,47 @@ function LoginPage() {
                 />
               </div>
 
-              <div className="mt-4 flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    id="remember"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 accent-[#778873] border border-[#D8DCD6] bg-[#FAFAF8] text-[#778873] focus:ring-2 focus:ring-[#778873]/30"
+                    className="h-4 w-4 accent-[#778873]"
                   />
                   <label className="text-[#2F3A36]">Remember me</label>
                 </div>
 
                 <Link
                   to="/forgot-password"
-                  className="font-medium text-[#2F3A36] hover:text-[#6B6F6C] hover:underline underline-offset-4"
+                  className="font-medium text-[#2F3A36] hover:underline"
                 >
                   Forgot password?
                 </Link>
               </div>
-              {error && <p>{error}</p>}
-              <div>
-                <button className="flex w-full justify-center mt-6 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition">
-                  SIGN IN
-                </button>
 
-                <button className="flex w-full items-center justify-center mt-3 bg-white border border-[#778873] hover:bg-[#f0f0f0] text-[#778873] font-medium py-3 px-6 rounded-xl transition gap-2">
-                  <img src={googlelogo} alt="google logo" className="h-4 w-4" />
-                  CONTINUE WITH GOOGLE
-                </button>
-              </div>
+              {error && <p className="text-sm text-red-500">{error}</p>}
+
+              <button className="flex w-full justify-center bg-[#778873] text-white py-3 rounded-xl">
+                SIGN IN
+              </button>
             </form>
 
-            <p className="mt-8 text-center text-sm/6 text-gray-400">
+            {/* <div className="mt-3 flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError("Google login failed")}
+                theme="outline"
+                size="large"
+                width="360"
+                text="continue_with"
+                shape="pill"
+              />
+            </div> */}
+
+            <p className="mt-8 text-center text-sm text-gray-400">
               Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="font-semibold text-[#2F3A36] hover:text-[#6B6F6C] hover:underline underline-offset-4"
-              >
+              <Link to="/register" className="font-semibold text-[#2F3A36]">
                 SIGN UP
               </Link>
             </p>
@@ -130,4 +150,5 @@ function LoginPage() {
     </>
   );
 }
+
 export default LoginPage;

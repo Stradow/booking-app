@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { signup } from "../api/adminApi";
-import googlelogo from "../assets/images/google.svg";
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 
@@ -23,6 +24,25 @@ function RegisterPage() {
     } catch (error) {
       console.log(error);
       setError(error.response?.data?.errorMessage);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const { credential } = credentialResponse;
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/google`,
+        { idToken: credential },
+      );
+
+      const { authToken } = response.data;
+      localStorage.setItem("authToken", authToken);
+
+      nav("/admin");
+    } catch (error) {
+      console.error("Google signup failed:", error);
+      setError("Google signup failed");
     }
   };
 
@@ -116,7 +136,7 @@ function RegisterPage() {
                     focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
                 />
               </div>
-              {/* <div>
+              <div>
                 <div className="flex items-center justify-between">
                   <label className="block text-sm font-medium text-[#2F3A36] mb-2">
                     Confirm Password
@@ -129,17 +149,24 @@ function RegisterPage() {
                   className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
                     focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
                 />
-              </div> */}
+              </div>
               {error && <p>{error}</p>}
               <div>
                 <button className="flex w-full justify-center mt-6 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition">
                   CREATE ACCOUNT
                 </button>
 
-                <button className="flex w-full items-center justify-center mt-3 bg-white border border-[#778873] hover:bg-[#f0f0f0] text-[#778873] font-medium py-3 px-6 rounded-xl transition gap-2">
-                  <img src={googlelogo} alt="google logo" className="h-4 w-4" />
-                  CONTINUE WITH GOOGLE
-                </button>
+                {/* <div className="mt-3">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => setError("Google signup failed")}
+                  theme="outline"
+                  size="large"
+                  width="100%"
+                  text="signup_with"
+                  shape="pill"
+                />
+              </div> */}
               </div>
             </form>
 
