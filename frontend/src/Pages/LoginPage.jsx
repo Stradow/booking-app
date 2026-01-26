@@ -36,7 +36,7 @@ function LoginPage() {
   return (
     <>
       <Navbar />
-      <div className="flex h-[80vh] items-center justify-center px-6 bg-[#F4F1EC]">
+      <div className="flex min-h-screen items-center justify-center px-6 bg-[#F4F1EC] py-12">
         <div className="bg-[#FAFAF8] rounded-xl py-8 px-10 shadow-sm border border-[#E6E8E3] max-w-md w-full">
           <h2 className="mt-3 text-center text-3xl font-medium tracking-tight text-[#2F3A36]">
             Sign in to your account

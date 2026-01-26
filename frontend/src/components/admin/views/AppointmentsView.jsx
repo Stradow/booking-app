@@ -35,7 +35,7 @@ function AppointmentsView() {
   }, []);
 
   const getServiceName = (serviceId) => {
-    const service = services.find((service) => service.id === serviceId);
+    const service = services.find((service) => service._id === serviceId);
     return service ? service.name : "-";
   };
 
@@ -43,13 +43,15 @@ function AppointmentsView() {
   const normalizedSearch = searchTerm.toLowerCase();
 
   const filteredAppointments = appointments.filter((appointment) => {
-    const clientName =
-      `${appointment.client.firstName} ${appointment.client.lastName}`.toLowerCase();
+    const userName = appointment.user
+      ? `${appointment.user.firstName} ${appointment.user.lastName}`.toLowerCase()
+      : "";
 
-    const serviceName = getServiceName(appointment.serviceId).toLowerCase();
+    const serviceName =
+      getServiceName(appointment.serviceId).toLowerCase() || "";
 
     const matchesSearch =
-      clientName.includes(normalizedSearch) ||
+      userName.includes(normalizedSearch) ||
       serviceName.includes(normalizedSearch);
 
     const matchesStatus =
@@ -60,10 +62,12 @@ function AppointmentsView() {
 
   async function handleAcceptAppointment(id) {
     try {
-      const updatedAppointment = await updateAppointmentStatus(id, "confirmed");
+      const updatedAppointment = await updateAppointmentStatus(id, {
+        status: "confirmed",
+      });
 
       const updatedAppointments = appointments.map((appointment) =>
-        appointment.id === id ? updatedAppointment : appointment
+        appointment._id === id ? updatedAppointment : appointment,
       );
       setAppointment(updatedAppointments);
     } catch (error) {
@@ -76,7 +80,7 @@ function AppointmentsView() {
       await deleteAppointment(id);
 
       const filteredAppointments = appointments.filter(
-        (appointment) => appointment.id !== id
+        (appointment) => appointment._id !== id,
       );
       setAppointment(filteredAppointments);
     } catch (error) {
@@ -91,7 +95,7 @@ function AppointmentsView() {
         <div className="flex items-center gap-3">
           <input
             type="text"
-            placeholder="Search by client or service"
+            placeholder="Search by user or service"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-56 bg-white border border-[#D8DCD6] rounded-lg px-3 py-2 placeholder:text-[#6B6F6C] focus:outline-none text-sm"
@@ -120,7 +124,7 @@ function AppointmentsView() {
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                       </span>
                     </button>
-                  )
+                  ),
                 )}
               </div>
             )}
@@ -144,14 +148,15 @@ function AppointmentsView() {
 
           <tbody>
             {filteredAppointments.map((appointment) => (
-              <tr className="border-t border-[#D8DCD6]" key={appointment.id}>
+              <tr className="border-t border-[#D8DCD6]" key={appointment._id}>
                 <td className="px-4 py-4">{appointment.date}</td>
                 <td className="px-4 py-4">{appointment.time}</td>
                 <td className="px-4 py-4">
-                  {appointment.client.firstName}
-                  {appointment.client.lastName}
+                  {appointment.user
+                    ? `${appointment.user.firstName} ${appointment.user.lastName}`
+                    : "Unknown"}
                 </td>
-                <td className="px-4 py-4">{appointment.client.phone}</td>
+                <td className="px-4 py-4">{appointment.user?.phone || "-"}</td>
                 <td className="px-4 py-4">
                   {getServiceName(appointment.serviceId)}
                 </td>
@@ -167,14 +172,14 @@ function AppointmentsView() {
                   <div className="flex justify-center gap-3">
                     <button
                       onClick={() => {
-                        handleAcceptAppointment(appointment.id);
+                        handleAcceptAppointment(appointment._id);
                       }}
                     >
                       <CheckCircleIcon className="size-6 text-[#778873]" />
                     </button>
                     <button
                       onClick={() => {
-                        handleCancelAppointment(appointment.id);
+                        handleCancelAppointment(appointment._id);
                       }}
                     >
                       <XCircleIcon className="size-6 text-[#778873]" />
