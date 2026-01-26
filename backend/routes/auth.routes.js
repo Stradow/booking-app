@@ -4,6 +4,9 @@ const TherapistModel = require("../models/Therapists.model");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { isAuthenticated } = require("../middlewares/jwt.middleware");
+const { OAuth2Client } = require("google-auth-library");
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 router.post("/signup", async (req, res) => {
   const { email, password } = req.body;
@@ -18,7 +21,7 @@ router.post("/signup", async (req, res) => {
     const therapistAlreadyInDB = await TherapistModel.findOne({ email });
 
     if (therapistAlreadyInDB) {
-      res.status(403).json({ errorMessage: "Email already used" });
+      return res.status(403).json({ errorMessage: "Email already used" });
     } else {
       const theSalt = bcryptjs.genSaltSync(12);
       const theHashedPassword = bcryptjs.hashSync(password, theSalt);
@@ -51,14 +54,14 @@ router.post("/login", async (req, res) => {
       "+password",
     );
     if (!therapistAlreadyInDB) {
-      res.status(403).json({ errorMessage: "Email not found" });
+      return res.status(403).json({ errorMessage: "Email not found" });
     } else {
       const doesPasswordMatch = bcryptjs.compareSync(
         password,
         therapistAlreadyInDB.password,
       );
       if (!doesPasswordMatch) {
-        res.status(403).json({ errorMessage: "Wrong Password" });
+        return res.status(403).json({ errorMessage: "Wrong Password" });
       } else {
         const payload = { _id: therapistAlreadyInDB._id };
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
@@ -74,11 +77,70 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/google", async (req, res) => {
+  const { idToken } = req.body;
+
+  if (!idToken) {
+    return res.status(400).json({ errorMessage: "Missing Google token" });
+  }
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    const {
+      sub: googleId,
+      email,
+      given_name: firstName,
+      family_name: lastName,
+      picture,
+    } = payload;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ errorMessage: "Google account has no email" });
+    }
+
+    let therapist = await TherapistModel.findOne({ email });
+
+    if (!therapist) {
+      therapist = await TherapistModel.create({
+        email,
+        firstName,
+        lastName,
+        googleId,
+        profilePicture: picture,
+        isActive: true,
+      });
+    }
+
+    const jwtPayload = { _id: therapist._id };
+
+    const authToken = jwt.sign(jwtPayload, process.env.TOKEN_SECRET, {
+      algorithm: "HS256",
+      expiresIn: "6h",
+    });
+
+    res.status(200).json({ authToken });
+  } catch (error) {
+    console.error("GOOGLE AUTH ERROR:", error);
+    res.status(401).json({ errorMessage: "Invalid Google token" });
+  }
+});
+
 router.get("/verify", isAuthenticated, async (req, res) => {
-  const therapist = await TherapistModel.findById(req.payload._id).select(
-    "-password -email",
-  );
-  res.status(200).json(therapist);
+  try {
+    const therapist = await TherapistModel.findById(req.payload._id).select(
+      "-password -email",
+    );
+    res.status(200).json(therapist);
+  } catch (error) {
+    res.status(500).json({ errorMessage: error.message });
+  }
 });
 
 module.exports = router;
