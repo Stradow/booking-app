@@ -64,7 +64,7 @@ function DateTimePicker({
           onClick={onNext}
           className="bg-[#778873] text-white px-8 py-3 text-base font-semibold rounded-lg disabled:opacity-50"
         >
-          NEXT →
+          Next →
         </button>
       </div>
     </div>
