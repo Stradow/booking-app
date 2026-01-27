@@ -42,7 +42,7 @@ function BookingPage() {
       // Prepare appointment data
       const newAppointment = await createAppointment({
         userId: createdUser._id,
-        therapistId: selectedTherapist._id,
+        therapistId: selectedService.therapistId, // selectedTherapist._id
         serviceId: [selectedService._id],
         startAt: startAt.toISOString(),
         endAt: endAt.toISOString(),
