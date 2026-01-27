@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import Navbar from "../components/layout/Navbar";
 import ServiceCard from "../components/booking/ServiceCard";
 import DateTimePicker from "../components/booking/DateTimePicker";
@@ -12,6 +13,7 @@ function BookingPage() {
   const [appointment, setAppointment] = useState(null);
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState(null);
+  const [selectedTherapist, setSelectedTherapist] = useState(null);
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [client, setClient] = useState({
@@ -51,6 +53,8 @@ function BookingPage() {
             <ServiceCard
               selectedService={selectedService}
               setSelectedService={setSelectedService}
+              selectedTherapist={selectedTherapist}
+              setSelectedTherapist={setSelectedTherapist}
               onNext={() => setStep(2)}
             />
           )}
@@ -78,6 +82,7 @@ function BookingPage() {
           {step === 4 && (
             <BookingSummary
               selectedService={selectedService}
+              selectedTherapist={selectedTherapist}
               date={date}
               time={time}
               client={client}

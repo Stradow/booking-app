@@ -20,6 +20,12 @@ const servicesSchema = new Schema({
   },
   isActive: {
     type: Boolean,
+    default: true,
+  },
+  therapistId: {
+    type: Schema.Types.ObjectId,
+    ref: "Therapists",
+    required: true,
   },
 });
 
