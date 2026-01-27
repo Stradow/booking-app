@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { autorizationToken } from "../api/adminApi";
+import { authorizationToken } from "../api/adminApi";
 
 const AuthContext = createContext();
 
@@ -20,16 +20,31 @@ const AuthWrapper = ({ children }) => {
       setIsLoggedIn(false);
       return;
     }
+
+    const cachedTherapist = JSON.parse(
+      localStorage.getItem("currentTherapist"),
+    );
+    if (cachedTherapist) {
+      setCurrentTherapist(cachedTherapist);
+      setIsLoggedIn(true);
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const therapist = await autorizationToken(tokenInStorage);
+      const therapist = await authorizationToken(tokenInStorage);
 
       setCurrentTherapist(therapist);
       setIsLoggedIn(true);
+
+      localStorage.setItem("currentTherapist", JSON.stringify(therapist));
     } catch (error) {
       console.log(error);
       setCurrentTherapist(null);
       setIsLoggedIn(false);
-      nav("/");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("currentTherapist");
+      sessionStorage.removeItem("authToken");
     } finally {
       setIsLoading(false);
     }
@@ -37,6 +52,10 @@ const AuthWrapper = ({ children }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("currentTherapist");
+    sessionStorage.removeItem("authToken");
+    setCurrentTherapist(null);
+    setIsLoggedIn(false);
     nav("/login");
   };
 

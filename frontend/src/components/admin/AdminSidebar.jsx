@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
 import { NavLink } from "react-router-dom";
 import {
   ClipboardIcon,
@@ -17,6 +19,8 @@ const activeLink = "bg-[#E4EAE7]";
 const hoverLink = "hover:bg-[#F1F4F2]";
 
 function AdminSidebar() {
+  const { handleLogout } = useContext(AuthContext);
+
   return (
     <aside className="w-64 min-h-screen bg-white border-r border-[#E4EAE7] flex flex-col">
       <div className="px-6 py-6">
@@ -101,10 +105,13 @@ function AdminSidebar() {
       </nav>
 
       <div className="px-2 pb-6">
-        <NavLink to="/" className={`${baseLink} ${hoverLink}`}>
+        <button
+          onClick={handleLogout}
+          className={`${baseLink} ${hoverLink} w-full`}
+        >
           <ArrowLeftEndOnRectangleIcon className="size-5 text-[#778873]" />
           <span className="text-sm text-[#2F3A36]">Logout</span>
-        </NavLink>
+        </button>
       </div>
     </aside>
   );
