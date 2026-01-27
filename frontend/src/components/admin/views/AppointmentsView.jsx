@@ -3,13 +3,14 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   getAppointments,
   getServices,
   updateAppointmentStatus,
   deleteAppointment,
 } from "../../../api/adminApi";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function AppointmentsView() {
   const [appointments, setAppointment] = useState([]);
@@ -17,6 +18,7 @@ function AppointmentsView() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showFilter, setShowFilter] = useState(false);
+  const { currentTherapist } = useContext(AuthContext);
 
   const statusStyles = {
     completed: "bg-[#5F6F73] text-white",
@@ -28,11 +30,16 @@ function AppointmentsView() {
   useEffect(() => {
     Promise.all([getAppointments(), getServices()])
       .then(([appointmentsData, servicesData]) => {
-        setAppointment(appointmentsData);
+        // Filter appointments to show only current therapist's appointments
+        const myAppointments = appointmentsData.filter(
+          (appointment) =>
+            appointment.therapistId?._id === currentTherapist?._id,
+        );
+        setAppointment(myAppointments);
         setServices(servicesData);
       })
       .catch((error) => console.log("No data found", error));
-  }, []);
+  }, [currentTherapist]);
 
   // const getServiceName = (serviceId) => {
   //   const service = services.find((service) => service._id === serviceId);
@@ -61,7 +68,7 @@ function AppointmentsView() {
     const matchesStatus =
       statusFilter === "all" || appointment.status === statusFilter;
 
-    return matchesSearch && statusFilter && matchesStatus;
+    return matchesSearch && matchesStatus;
   });
 
   async function handleAcceptAppointment(id) {
