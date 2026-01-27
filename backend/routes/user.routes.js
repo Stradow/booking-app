@@ -17,6 +17,7 @@ router.get("/all-users", async (req, res) => {
     const data = await UserModel.find();
     res.status(200).json(data);
   } catch (error) {
+    console.error("Create User Error:", error);
     res.status(500).json({ errorMessage: error });
   }
 });

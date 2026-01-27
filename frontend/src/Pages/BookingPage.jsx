@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import ServiceCard from "../components/booking/ServiceCard";
 import DateTimePicker from "../components/booking/DateTimePicker";
 import PatientForm from "../components/booking/PatientForm";
 import BookingSummary from "../components/booking/BookingSummary";
 import Footer from "../components/layout/Footer";
+import { createUser, createAppointment } from "../api/adminApi";
 
 function BookingPage() {
-  const navigate = useNavigate(); 
+  const [appointment, setAppointment] = useState(null);
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState(null);
   const [selectedTherapist, setSelectedTherapist] = useState(null);
@@ -26,6 +28,8 @@ function BookingPage() {
     setIsSubmitting(true);
 
     try {
+      const createdUser = await createUser(client);
+
       // Combine date and time into startAt
       const [hours, minutes] = time.split(":");
       const startAt = new Date(date);
@@ -36,7 +40,8 @@ function BookingPage() {
       endAt.setMinutes(endAt.getMinutes() + selectedService.duration);
 
       // Prepare appointment data
-      const appointmentData = {
+      const newAppointment = await createAppointment({
+        userId: createdUser._id,
         therapistId: selectedTherapist._id,
         serviceId: [selectedService._id],
         startAt: startAt.toISOString(),
@@ -44,25 +49,9 @@ function BookingPage() {
         status: "pending",
         priceSnapShot: selectedService.price,
         durationSnapShot: selectedService.duration,
-      };
+      });
 
-      // Send to backend
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/appointment/create-appointment`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(appointmentData),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to create appointment");
-      }
-
-      const result = await response.json();
+      setAppointment(newAppointment);
 
       // Reset form
       setSelectedService(null);
@@ -76,7 +65,7 @@ function BookingPage() {
         email: "",
       });
       setStep(1);
-      navigate("/"); 
+      navigate("/");
     } catch (error) {
       console.error("Error creating appointment:", error);
       alert(

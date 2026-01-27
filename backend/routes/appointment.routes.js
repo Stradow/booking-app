@@ -13,7 +13,7 @@ router.post("/create-appointment", async (req, res) => {
 router.get("/all-appointments", async (req, res) => {
   try {
     const data = await AppointmentModel.find()
-      .populate("userId", "firstName lastName")
+      .populate("userId", "firstName lastName phone")
       .populate("therapistId", "firstName lastName")
       .populate("serviceId", "name duration price");
     res.status(200).json(data);
@@ -52,7 +52,11 @@ router.patch("/update-appointment/:id", async (req, res) => {
       req.params.id,
       req.body,
       { new: true },
-    );
+    )
+      .populate("userId", "firstName lastName phone")
+      .populate("serviceId", "name duration price");
+
+    res.status(200).json(updateAppointment);
   } catch (error) {
     res.status(500).json({ errorMessage: error });
   }
