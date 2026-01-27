@@ -28,7 +28,19 @@ function BookingPage() {
     setIsSubmitting(true);
 
     try {
-      const createdUser = await createUser(client);
+      // Create a basic user record with client info
+      const userData = {
+        firstName: client.firstName,
+        lastName: client.lastName,
+        phone: client.phone,
+      };
+
+      // Only add email if it exists and is not empty
+      if (client.email && client.email.trim() !== "") {
+        userData.email = client.email;
+      }
+
+      const createdUser = await createUser(userData);
 
       // Combine date and time into startAt
       const [hours, minutes] = time.split(":");
@@ -39,19 +51,24 @@ function BookingPage() {
       const endAt = new Date(startAt);
       endAt.setMinutes(endAt.getMinutes() + selectedService.duration);
 
-      // Prepare appointment data
-      const newAppointment = await createAppointment({
+      // Prepare appointment data with the created user's ID
+      const appointmentData = {
         userId: createdUser._id,
-        therapistId: selectedService.therapistId, // selectedTherapist._id
+        therapistId: selectedTherapist._id,
         serviceId: [selectedService._id],
         startAt: startAt.toISOString(),
         endAt: endAt.toISOString(),
         status: "pending",
         priceSnapShot: selectedService.price,
         durationSnapShot: selectedService.duration,
-      });
+      };
 
+      const newAppointment = await createAppointment(appointmentData);
       setAppointment(newAppointment);
+
+      alert(
+        `Booking confirmed!\n\nThank you ${client.firstName}!\nWe'll contact you at ${client.phone}`,
+      );
 
       // Reset form
       setSelectedService(null);
