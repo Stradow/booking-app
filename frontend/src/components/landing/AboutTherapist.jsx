@@ -16,9 +16,7 @@ function AboutTherapist() {
               </p>
             </div>
             <div className="">
-              <h2 className="text-[#778873] text-3xl mb-5">
-                Dr. Sarah Johnson
-              </h2>
+              <h2 className="text-[#778873] text-3xl mb-5">Jim Johnson</h2>
               <p className="text-2xl mb-5">Certified Physiotherapist.</p>
               <p className="text-xl">
                 Help people move and feel better with personalized care. <br />
