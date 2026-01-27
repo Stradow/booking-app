@@ -43,12 +43,16 @@ function AppointmentsView() {
   const normalizedSearch = searchTerm.toLowerCase();
 
   const filteredAppointments = appointments.filter((appointment) => {
-    const userName = appointment.user
-      ? `${appointment.user.firstName} ${appointment.user.lastName}`.toLowerCase()
+    const userName = appointment.userId
+      ? `${appointment.userId.firstName} ${appointment.userId.lastName}`.toLowerCase()
       : "";
 
-    const serviceName =
-      getServiceName(appointment.serviceId).toLowerCase() || "";
+    const serviceName = appointment.serviceId
+      ? appointment.serviceId
+          .map((service) => service.name)
+          .join(", ")
+          .toLowerCase()
+      : "";
 
     const matchesSearch =
       userName.includes(normalizedSearch) ||
@@ -62,9 +66,7 @@ function AppointmentsView() {
 
   async function handleAcceptAppointment(id) {
     try {
-      const updatedAppointment = await updateAppointmentStatus(id, {
-        status: "confirmed",
-      });
+      const updatedAppointment = await updateAppointmentStatus(id, "confirmed");
 
       const updatedAppointments = appointments.map((appointment) =>
         appointment._id === id ? updatedAppointment : appointment,
@@ -77,12 +79,13 @@ function AppointmentsView() {
 
   async function handleCancelAppointment(id) {
     try {
-      await deleteAppointment(id);
+      const updatedAppointment = await updateAppointmentStatus(id, "canceled");
 
-      const filteredAppointments = appointments.filter(
-        (appointment) => appointment._id !== id,
+      const updatedAppointments = appointments.map((appointment) =>
+        appointment._id === id ? updatedAppointment : appointment,
       );
-      setAppointment(filteredAppointments);
+
+      setAppointment(updatedAppointments);
     } catch (error) {
       console.log("Error canceling the appointment", error);
     }
@@ -149,16 +152,33 @@ function AppointmentsView() {
           <tbody>
             {filteredAppointments.map((appointment) => (
               <tr className="border-t border-[#D8DCD6]" key={appointment._id}>
-                <td className="px-4 py-4">{appointment.date}</td>
-                <td className="px-4 py-4">{appointment.time}</td>
                 <td className="px-4 py-4">
-                  {appointment.user
-                    ? `${appointment.user.firstName} ${appointment.user.lastName}`
+                  {new Date(appointment.startAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+                </td>
+                <td className="px-4 py-4">
+                  {new Date(appointment.startAt).toLocaleTimeString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </td>
+                <td className="px-4 py-4">
+                  {appointment.userId
+                    ? `${appointment.userId.firstName} ${appointment.userId.lastName}`
                     : "Unknown"}
                 </td>
-                <td className="px-4 py-4">{appointment.user?.phone || "-"}</td>
                 <td className="px-4 py-4">
-                  {getServiceName(appointment.serviceId)}
+                  {appointment.userId?.phone || "-"}
+                </td>
+                <td className="px-4 py-4">
+                  {appointment.serviceId?.length
+                    ? appointment.serviceId
+                        .map((service) => service.name)
+                        .join(", ")
+                    : "-"}
                 </td>
                 <td className="px-4 py-4">
                   <span
