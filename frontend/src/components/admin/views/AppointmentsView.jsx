@@ -34,10 +34,10 @@ function AppointmentsView() {
       .catch((error) => console.log("No data found", error));
   }, []);
 
-  const getServiceName = (serviceId) => {
-    const service = services.find((service) => service._id === serviceId);
-    return service ? service.name : "-";
-  };
+  // const getServiceName = (serviceId) => {
+  //   const service = services.find((service) => service._id === serviceId);
+  //   return service ? service.name : "-";
+  // };
 
   // FILTER AND SEARCH
   const normalizedSearch = searchTerm.toLowerCase();
