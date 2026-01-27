@@ -72,6 +72,11 @@ router.post(
   uploader.single("imageUrl"),
   async (req, res) => {
     try {
+      if (!req.file) {
+        return res.status(400).json({
+          errorMessage: "No file uploaded. Please select an image.",
+        });
+      }
       const updatedTherapist = await TherapistModel.findByIdAndUpdate(
         req.params.therapistId,
         { profilePicture: req.file.path },
