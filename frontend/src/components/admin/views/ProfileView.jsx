@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
 import {
   getTherapistById,
   updateTherapist,
-  uploadTherapistProfilePicture,
+  updateTherapistProfilePicture,
 } from "../../../api/adminApi";
 
 function ProfileView() {
-  const { currentTherapist, isLoading } = useContext(AuthContext);
+  const { currentTherapist } = useContext(AuthContext);
   const therapistId = currentTherapist?._id;
-  const nav = useNavigate();
 
-  const [profilePicture, setProfilePicture] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [speciality, setSpeciality] = useState("");
@@ -22,7 +22,10 @@ function ProfileView() {
   const [language, setLanguage] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
+
   const [loading, setLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (!therapistId) return;
@@ -31,7 +34,7 @@ function ProfileView() {
       try {
         const therapist = await getTherapistById(therapistId);
 
-        setProfilePicture(therapist.profilePicture || "");
+        setPreviewUrl(therapist.profilePicture || "");
         setFirstName(therapist.firstName || "");
         setLastName(therapist.lastName || "");
         setSpeciality(therapist.speciality || "");
@@ -49,8 +52,19 @@ function ProfileView() {
     fetchTherapistProfile();
   }, [therapistId]);
 
+  function handleImageChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setProfilePicture(file);
+
+    const imagePreview = URL.createObjectURL(file);
+    setPreviewUrl(imagePreview);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+    setIsSaving(true);
 
     try {
       await updateTherapist(therapistId, {
@@ -68,12 +82,16 @@ function ProfileView() {
         const formData = new FormData();
         formData.append("imageUrl", profilePicture);
 
-        await uploadTherapistProfilePicture(therapistId, formData);
+        await updateTherapistProfilePicture(therapistId, formData);
       }
 
-      nav("/admin/profile");
+      setSuccessMessage("Profile saved successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Profile update failed", error);
+      console.error("Error details:", error.response?.data);
+    } finally {
+      setIsSaving(false);
     }
   }
 
@@ -84,16 +102,26 @@ function ProfileView() {
       <h2 className="text-[#2F3A36] text-3xl font-medium mb-8">Profile</h2>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
+        {previewUrl && (
+          <div className="flex justify-center mb-4">
+            <img
+              src={previewUrl}
+              alt="Profile preview"
+              className="w-32 h-32 rounded-full object-cover border border-[#D8DCD6]"
+            />
+          </div>
+        )}
         <div>
           <label className="block text-sm font-medium text-[#2F3A36] mb-2">
             Profile Picture
           </label>
           <input
-            className="w-full rounded-lg bg-[#FAFAF8] border border-[#D8DCD6] px-4 py-3 text-[#6B6F6C]
+            className="w-full rounded-lg bg-[#FAFAF8] border-2 border-dotted border-[#D8DCD6] px-4 py-3 text-center text-[#6B6F6C]
               focus:outline-none focus:border-[#778873] focus:ring-2 focus:ring-[#778873]/30"
             type="file"
-            placeholder="Choose a Picture"
-            onChange={(e) => setProfilePicture(e.target.files[0])}
+            accept="image/*"
+            name="image"
+            onChange={handleImageChange}
           />
         </div>
 
@@ -217,15 +245,16 @@ function ProfileView() {
           </div>
         </div>
 
+        {successMessage && (
+          <p className="mb-4 text-green-600 font-medium">{successMessage}</p>
+        )}
+
         <div className="flex justify-end pt-4 gap-4">
-          <button className="mt-8 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition">
-            SAVE PROFILE
-          </button>
           <button
-            onClick={() => nav(-1)}
-            className="mt-8 bg-white border border-[#778873] hover:bg-[#f0f0f0] text-[#778873] font-medium py-3 px-6 rounded-xl transition"
+            disabled={isSaving}
+            className="mt-8 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition"
           >
-            CANCEL
+            {isSaving ? "Saving..." : "SAVE PROFILE"}
           </button>
         </div>
       </form>

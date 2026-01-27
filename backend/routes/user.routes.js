@@ -65,24 +65,4 @@ router.delete("/delete-user/:id", async (req, res) => {
   }
 });
 
-// Update profile picture
-router.post(
-  "/update-profile-picture/:userId",
-  isAuthenticated,
-  uploader.single("imageUrl"),
-  async (req, res) => {
-    try {
-      const updatedUser = await UserModel.findByIdAndUpdate(
-        req.params.userId,
-        { profilePicture: req.file.path },
-        { new: true },
-      ).select("-password");
-      res.status(200).json({ message: "Image updated", updatedUser });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ errorMessage: error.message });
-    }
-  },
-);
-
 module.exports = router;
