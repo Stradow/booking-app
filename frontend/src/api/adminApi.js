@@ -3,10 +3,10 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 /* AUTH */
-export const autorizationToken = async (token) => {
+export const authorizationToken = async (token) => {
   const { data } = await axios.get(`${API_URL}/auth/verify`, {
     headers: {
-      authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   return data;
@@ -68,7 +68,7 @@ export const updateTherapistProfilePicture = async (therapistId, formData) => {
     formData,
     {
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     },
   );
