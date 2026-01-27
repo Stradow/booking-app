@@ -6,11 +6,13 @@ function formatDate(date) {
 
 function BookingSummary({
   selectedService,
+  selectedTherapist,
   date,
   time,
   client,
   onBack,
   onConfirm,
+  isSubmitting,
 }) {
   return (
     <div className="bg-[#faf8f3] p-10 w-full rounded-xl">
@@ -40,6 +42,13 @@ function BookingSummary({
         )}
 
         <p>
+          <span className="">Therapist: </span>
+          <span className="text-[#778873]">
+            {selectedTherapist?.firstName} {selectedTherapist?.lastName}
+          </span>
+        </p>
+
+        <p>
           <span className="">Service: </span>
           <span className="text-[#778873]">{selectedService?.name}</span>
         </p>
@@ -62,17 +71,19 @@ function BookingSummary({
 
       <div className="flex justify-end mt-12 gap-4">
         <button
-          className="text-gray-600 px-8 py-3  border rounded-lg hover:bg-[#627360] cursor-pointer hover:text-white "
+          className="text-gray-600 px-8 py-3 border rounded-lg hover:bg-[#627360] cursor-pointer hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={onBack}
+          disabled={isSubmitting}
         >
           Edit information
         </button>
 
         <button
-          className="bg-[#778873] text-white px-8 py-3 text-base font-semibold rounded-lg cursor-pointer hover:bg-[#627360] hover:text-white"
+          className="bg-[#778873] text-white px-8 py-3 text-base font-semibold rounded-lg cursor-pointer hover:bg-[#627360] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={onConfirm}
+          disabled={isSubmitting}
         >
-          Confirm Booking
+          {isSubmitting ? "Confirming..." : "Confirm Booking"}
         </button>
       </div>
     </div>

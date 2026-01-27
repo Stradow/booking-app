@@ -1,9 +1,19 @@
 const ServiceModel = require("../models/Services.model");
+const TherapistModel = require("../models/Therapists.model");
 const router = require("express").Router();
 
 router.post("/create-service", async (req, res) => {
   try {
     const createdService = await ServiceModel.create(req.body);
+
+    if (req.body.therapistId) {
+      await TherapistModel.findByIdAndUpdate(
+        req.body.therapistId,
+        { $push: { services: createdService._id } },
+        { new: true },
+      );
+    }
+
     res.status(201).json(createdService);
   } catch (error) {
     res.status(500).json({ errorMessage: error });
@@ -56,6 +66,14 @@ router.patch("/update-service/:id", async (req, res) => {
 
 router.delete("/delete-service/:id", async (req, res) => {
   try {
+    const service = await ServiceModel.findById(req.params.id);
+
+    if (service && service.therapistId) {
+      await TherapistModel.findByIdAndUpdate(service.therapistId, {
+        $pull: { services: service._id },
+      });
+    }
+
     const data = await ServiceModel.findByIdAndDelete(req.params.id);
     res.status(200).json(data);
   } catch (error) {
