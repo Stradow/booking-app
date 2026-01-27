@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   createService,
   getServiceById,
   updateService,
 } from "../../../api/adminApi";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function ServiceForm() {
   const { id } = useParams();
   const nav = useNavigate();
   const isEdit = Boolean(id);
+  const { currentTherapist } = useContext(AuthContext);
 
   const [name, setName] = useState("");
   const [duration, setDuration] = useState("");
@@ -27,7 +29,7 @@ function ServiceForm() {
           setDuration(service.duration || "");
           setPrice(service.price || "");
           setDescription(service.description || "");
-          setIsActive(service.active ?? true);
+          setIsActive(service.isActive ?? true);
         } catch (error) {
           console.error("Failed to fetch service", error);
         } finally {
@@ -44,21 +46,34 @@ function ServiceForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (!currentTherapist || !currentTherapist._id) {
+      alert("You must be logged in as a therapist to create a service");
+      return;
+    }
+
     const serviceData = {
       name,
       duration: Number(duration),
       price: Number(price),
       description,
-      active: isActive,
+      isActive: isActive,
+      therapistId: currentTherapist._id,
     };
 
-    if (isEdit) {
-      await updateService(id, serviceData);
-    } else {
-      await createService(serviceData);
-    }
+    // console.log("Creating service with data:", serviceData);
 
-    nav("/admin/services");
+    try {
+      if (isEdit) {
+        await updateService(id, serviceData);
+      } else {
+        await createService(serviceData);
+      }
+      nav("/admin/services");
+    } catch (error) {
+      console.error("Error saving service:", error);
+      alert("Failed to save service. Check console for details.");
+    }
   }
 
   return (
@@ -151,10 +166,14 @@ function ServiceForm() {
         </div>
 
         <div className="flex justify-end pt-4 gap-4">
-          <button className="mt-8 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition">
+          <button
+            type="submit"
+            className="mt-8 bg-[#778873] hover:opacity-90 text-white font-medium py-3 px-6 rounded-xl transition"
+          >
             {isEdit ? "SAVE CHANGES" : "ADD SERVICE"}
           </button>
           <button
+            type="button"
             onClick={() => nav(-1)}
             className="mt-8 bg-white border border-[#778873] hover:bg-[#f0f0f0] text-[#778873] font-medium py-3 px-6 rounded-xl transition"
           >

@@ -69,7 +69,7 @@ function AdminSidebar() {
           <span className="text-[#2F3A36]">Add Service</span>
         </NavLink>
 
-        <NavLink
+        {/* <NavLink
           to="/admin/availability"
           className={({ isActive }) =>
             `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
@@ -77,7 +77,7 @@ function AdminSidebar() {
         >
           <CalendarDaysIcon className="size-5 text-[#778873]" />
           <span className="text-sm text-[#2F3A36]">Availability</span>
-        </NavLink>
+        </NavLink> */}
 
         <NavLink
           to="/admin/profile"
@@ -89,7 +89,7 @@ function AdminSidebar() {
           <span className="text-sm text-[#2F3A36]">Profile</span>
         </NavLink>
 
-        <NavLink
+        {/* <NavLink
           to="/admin/settings"
           className={({ isActive }) =>
             `${baseLink} ${hoverLink} ${isActive ? activeLink : ""}`
@@ -97,7 +97,7 @@ function AdminSidebar() {
         >
           <Cog6ToothIcon className="size-5 text-[#778873]" />
           <span className="text-sm text-[#2F3A36]">Settings</span>
-        </NavLink>
+        </NavLink> */}
       </nav>
 
       <div className="px-2 pb-6">
