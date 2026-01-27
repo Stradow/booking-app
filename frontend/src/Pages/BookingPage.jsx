@@ -5,8 +5,11 @@ import DateTimePicker from "../components/booking/DateTimePicker";
 import PatientForm from "../components/booking/PatientForm";
 import BookingSummary from "../components/booking/BookingSummary";
 import Footer from "../components/layout/Footer";
+import { createUser, createAppointment } from "../api/adminApi";
+import { useNavigate } from "react-router-dom";
 
 function BookingPage() {
+  const [appointment, setAppointment] = useState(null);
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState(null);
   const [date, setDate] = useState(null);
@@ -17,6 +20,27 @@ function BookingPage() {
     phone: "",
     email: "",
   });
+  const nav = useNavigate();
+
+  const handleConfirmBooking = async () => {
+    try {
+      const createdUser = await createUser(client);
+
+      const newAppointment = await createAppointment({
+        userId: createdUser._id,
+        therapistId: selectedService.therapistId,
+        serviceId: [selectedService._id],
+        startAt: new Date(`${date}T${time}`),
+        status: "pending",
+      });
+      setAppointment(newAppointment);
+
+      nav("/");
+    } catch (error) {
+      console.log(error);
+      alert("Failed to confirm booking.");
+    }
+  };
 
   return (
     <>
@@ -58,6 +82,7 @@ function BookingPage() {
               time={time}
               client={client}
               onBack={() => setStep(3)}
+              onConfirm={handleConfirmBooking}
             />
           )}
         </div>

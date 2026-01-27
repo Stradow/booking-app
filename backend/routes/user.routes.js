@@ -8,6 +8,7 @@ router.post("/create-user", async (req, res) => {
     const createdUser = await UserModel.create(req.body);
     res.status(201).json(createdUser);
   } catch (error) {
+    console.error("Create User Error:", error);
     res.status(500).json({ errorMessage: error });
   }
 });
