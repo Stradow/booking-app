@@ -30,11 +30,21 @@ function AppointmentsView() {
   useEffect(() => {
     Promise.all([getAppointments(), getServices()])
       .then(([appointmentsData, servicesData]) => {
+        // console.log("All appointments:", appointmentsData);
+        // console.log("Current therapist ID:", currentTherapist?._id);
+
         // Filter appointments to show only current therapist's appointments
-        const myAppointments = appointmentsData.filter(
-          (appointment) =>
-            appointment.therapistId?._id === currentTherapist?._id,
-        );
+        const myAppointments = appointmentsData.filter((appointment) => {
+          // console.log(
+          //   "Comparing:",
+          //   appointment.therapistId?._id,
+          //   "with",
+          //   currentTherapist?._id,
+          // );
+          return appointment.therapistId?._id === currentTherapist?._id;
+        });
+
+        // console.log("My appointments after filter:", myAppointments);
         setAppointment(myAppointments);
         setServices(servicesData);
       })
@@ -148,7 +158,7 @@ function AppointmentsView() {
             <tr>
               <th className="px-4 py-3 font-medium">Date</th>
               <th className="px-4 py-3 font-medium">Time</th>
-              <th className="px-4 py-3 font-medium">Pacient</th>
+              <th className="px-4 py-3 font-medium">Patient</th>
               <th className="px-4 py-3 font-medium">Phone</th>
               <th className="px-4 py-3 font-medium">Service</th>
               <th className="px-4 py-3 font-medium">Status</th>

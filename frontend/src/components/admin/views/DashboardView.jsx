@@ -176,8 +176,8 @@ function DashboardView() {
                         {appointment.patientName}
                       </h3>
                       <p className="text-sm text-[#6B6F6C] mt-1">
-                        {appointment.date} - {appointment.time} -{" "}
-                        {appointment.service}
+                        {appointment.formattedDate} -{" "}
+                        {appointment.formattedTime} - {appointment.service}
                       </p>
                     </div>
                   </div>

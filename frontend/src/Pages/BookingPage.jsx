@@ -28,30 +28,29 @@ function BookingPage() {
     setIsSubmitting(true);
 
     try {
-      // Create a basic user record with client info
+      // console.log("📌 SELECTED THERAPIST:", selectedTherapist);
+      // console.log("📌 SELECTED SERVICE:", selectedService);
+
       const userData = {
         firstName: client.firstName,
         lastName: client.lastName,
         phone: client.phone,
       };
 
-      // Only add email if it exists and is not empty
       if (client.email && client.email.trim() !== "") {
         userData.email = client.email;
       }
 
       const createdUser = await createUser(userData);
+      // console.log("✅ USER CREATED:", createdUser);
 
-      // Combine date and time into startAt
       const [hours, minutes] = time.split(":");
       const startAt = new Date(date);
       startAt.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
-      // Calculate endAt based on service duration
       const endAt = new Date(startAt);
       endAt.setMinutes(endAt.getMinutes() + selectedService.duration);
 
-      // Prepare appointment data with the created user's ID
       const appointmentData = {
         userId: createdUser._id,
         therapistId: selectedTherapist._id,
@@ -63,7 +62,10 @@ function BookingPage() {
         durationSnapShot: selectedService.duration,
       };
 
+      // console.log("📤 SENDING TO BACKEND:", appointmentData);
       const newAppointment = await createAppointment(appointmentData);
+      // console.log("📥 RECEIVED FROM BACKEND:", newAppointment);
+
       setAppointment(newAppointment);
 
       alert(
@@ -84,7 +86,7 @@ function BookingPage() {
       setStep(1);
       navigate("/");
     } catch (error) {
-      console.error("Error creating appointment:", error);
+      console.error("❌ ERROR:", error);
       alert(
         "Sorry, there was an error creating your appointment. Please try again.",
       );
