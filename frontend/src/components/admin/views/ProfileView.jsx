@@ -40,7 +40,7 @@ function ProfileView() {
         setSpeciality(therapist.speciality || "");
         setExperience(therapist.experience || "");
         setBio(therapist.bio || "");
-        setLanguage(therapist.language || "");
+        setLanguage(therapist.languages?.[0] || "");
         setCity(therapist.city || "");
         setCountry(therapist.country || "");
       } catch (error) {
@@ -73,7 +73,7 @@ function ProfileView() {
         speciality,
         experience,
         bio,
-        language,
+        languages: language ? [language] : [],
         city,
         country,
       });

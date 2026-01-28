@@ -26,7 +26,7 @@ const therapistsSchema = new Schema({
     type: String,
   },
   experience: {
-    type: String,
+    type: Number,
   },
   password: {
     type: String,
@@ -55,6 +55,12 @@ const therapistsSchema = new Schema({
   },
   languages: {
     type: [String],
+  },
+  city: {
+    type: String,
+  },
+  country: {
+    type: String,
   },
   isActive: {
     type: Boolean,
