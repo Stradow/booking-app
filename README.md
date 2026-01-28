@@ -1,16 +1,70 @@
-# React + Vite
+# 🧘 Kalmio — Online Massage Booking Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Kalmio is a full-stack web application that allows massage therapists and physiotherapists to accept online bookings through a public booking page, while managing services, availability, and appointments through a private admin dashboard.
 
-Currently, two official plugins are available:
+The platform is designed to be **simple for clients** and **powerful for therapists**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 👥 Clients (No Account Required)
 
-## Expanding the ESLint configuration
+- View available services and prices
+- Select date and time from an availability calendar
+- Enter contact details (phone required, email optional)
+- Review booking summary before confirmation
+- Confirm appointment
+- No login or registration required
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 🧭 Client Booking Flow
+
+1. Choose service
+2. Choose date & time
+3. Enter personal information
+4. Review booking summary
+5. Confirm booking
+
+All steps are handled on a single page with a guided multi-step flow.
+
+---
+
+### 🧑‍⚕️ Therapists (Admin Dashboard)
+
+- Secure signup and login
+- Dashboard overview with statistics
+- View and manage appointments
+- Create, edit, and delete services
+- Set availability (working days, hours, breaks)
+- Manage public booking page details
+- Availability changes instantly affect client booking
+
+## 🖥 Admin Flow (Therapist Journey)
+
+1. Therapist signs up or logs in
+2. Redirected to admin dashboard
+3. Creates one or more services
+4. Sets availability
+5. Clients can now book appointments
+6. Therapist views and manages bookings from the dashboard
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- **React** (Vite)
+- **React Router**
+- **Tailwind CSS**
+- **Axios**
+
+### Backend
+
+- **Node.js**
+- **Express.js**
+- **MongoDB**
+- **Mongoose**
+- **JWT Authentication** (therapists only)
+
+---
